@@ -1,8 +1,12 @@
 <?php 
+	session_start();
 	$message = "" ;
 
-	if (!empty($_POST[ 'name']) ) { 
-		$con=mysqli_connect( "localhost", "root", "", "patient_counseling"); 
+	$con=mysqli_connect( "localhost", "root", "", "patient_counseling");
+
+	$id = $_GET['id'];
+
+	if (!empty($_POST['name']) ) { 
 
 		$name = $_POST['name'];
 		$brand = $_POST['brand'];
@@ -14,18 +18,23 @@
 		$bbw = $_POST['bbw'];
 		$key_points = $_POST['key_points'];
 		
-		$query=" INSERT INTO drugs VALUES ('', '$name', '$brand', '$food', '$sedation', '$preg_lact', '$maj_se', '$caution', '$bbw', '$key_points') "; 
+		$query="UPDATE drugs SET drug_name='$name', drug_brand='$brand', food='$food', sedation='$sedation', preg_lact='$preg_lact', maj_se='$maj_se', caution='$caution', bbw='$bbw', key_points='$key_points' WHERE drug_id=$id"; 
 		
 		$result=mysqli_query($con, $query); 
 		
 		if($result) {
-			$message = "Drug " . $name . " added into database.";
+			$_SESSION['message'] = "Drug " . $name . " updated.";
+			header('Location: drugs-list.php');
 		}
 		else {
-			$message = "Error while submitting new drug.";
+			$message = "failure";
 		}
-		
 	}
+
+	$query = "SELECT * FROM drugs WHERE drug_id=$id"; 
+
+	$result = mysqli_query($con, $query); 
+	$rows = mysqli_fetch_assoc($result);
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,53 +48,60 @@
 
 <body>
 	<?php require_once 'navbar.php' ?>
-	<div style="padding-left: 20px;">
-		<h5>New Drug</h5>
-		<h6><?php echo $message ?></h6>
+	<div>
+		<div class="container">
+			<h5>New Drug</h5>
+			<?php if($message === "failure") {?>
+			<div class="note failure">
+				<h6>Error editing drug.</h6>
+			</div>
+			<?php } else {?>
+			<?php } ?>
+		</div>
 		<div class="row">
-			<form class="col s12" action="drugs.php" method="post" name="new-drug">
+			<form class="col s12" action="drug-edit.php?id=<?php echo $id ?>" method="post" name="new-drug">
 				<div class="input-field">
-					<input type="text" name="name">
+					<input type="text" name="name" value="<?php echo $rows['drug_name'] ?>">
 					<label for="">Name</label>
 				</div>
 
 				<div class="input-field">
-					<input type="text" name="brand">
+					<input type="text" name="brand" value="<?php echo $rows['drug_brand'] ?>">
 					<label for="">Brand</label>
 				</div>
 
 				<div class="input-field">
-					<input type="text" name="food">
+					<input type="text" name="food" value="<?php echo $rows['food'] ?>">
 					<label for="">Food</label>
 				</div>
 
 				<div class="input-field">
-					<input type="text" name="sedation">
+					<input type="text" name="sedation" value="<?php echo $rows['sedation'] ?>">
 					<label for="">Sedation</label>
 				</div>
 
 				<div class="input-field">
-					<input type="text" name="preg_lact">
+					<input type="text" name="preg_lact" value="<?php echo $rows['preg_lact'] ?>">
 					<label for="">Preg/Lact</label>
 				</div>
 
 				<div class="input-field">
-					<input type="text" name="maj_se">
+					<input type="text" name="maj_se" value="<?php echo $rows['maj_se'] ?>">
 					<label for="">Maj. SEs</label>
 				</div>
 
 				<div class="input-field">
-					<input type="text" name="caution">
+					<input type="text" name="caution" value="<?php echo $rows['caution'] ?>">
 					<label for="">Caution/Cont. Ind.</label>
 				</div>
 
 				<div class="input-field">
-					<input type="text" name="bbw">
+					<input type="text" name="bbw" value="<?php echo $rows['bbw'] ?>">
 					<label for="">BBW</label>
 				</div>
 
 				<div class="input-field">
-					<textarea name="key_points" class="materialize-textarea"></textarea>
+					<textarea name="key_points" class="materialize-textarea"><?php echo $rows['key_points'] ?></textarea>
 					<label for="">Key Counseling Points</label>
 				</div>
 

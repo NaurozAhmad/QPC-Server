@@ -91,3 +91,21 @@ nav {
     font-weight: bold;
     text-align: center;
 }
+.secondary-content {
+    font-size: 22px;
+}
+.action-delete {
+    padding-left: 15px;
+    color: #E95656;
+}
+.note {
+    width: 100%;
+    padding: 6px 18px;
+    border-radius: 2px;
+}
+.success {
+    background-color: #C7FFC2;
+}
+.failure {
+    background-color: #FFE4C2;
+}
